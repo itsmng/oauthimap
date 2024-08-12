@@ -24,7 +24,7 @@ jobs:
 
       - name: Build project
         run: |
-          cd /home/runner/work/one-timesecret/
+          cd /home/runner/work/oauthimap/
           composer install --no-dev
           rm -r oauthimap/tools oauthimap/.git oauthimap/.github oauthimap/.composer.*
           tar -zcvf oauthimap-${{ github.ref_name }}.tgz oauthimap
