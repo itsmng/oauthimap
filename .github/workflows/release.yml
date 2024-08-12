@@ -25,7 +25,7 @@ jobs:
       - name: Build project
         run: |
           cd /home/runner/work/oauthimap/
-          composer install --no-dev
+          cd oauthimap && composer install --no-dev && cd ..
           rm -r oauthimap/tools oauthimap/.git oauthimap/.github oauthimap/.composer.*
           tar -zcvf oauthimap-${{ github.ref_name }}.tgz oauthimap
 
