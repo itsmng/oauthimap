@@ -79,36 +79,54 @@ class PluginOauthimapApplication extends CommonDropdown {
    }
 
    public function getAdditionalFields() {
+      $providerValues = [];
+      foreach (self::getSupportedProviders() as $providerClass) {
+         $providerValues[$providerClass] = $providerClass::getName();
+      }
+
       return [
-         [
+         __('Active') => [
             'name'  => 'is_active',
-            'label' => __('Active'),
-            'type'  => 'bool'
+            'type'  => 'checkbox',
+            'value' => $this->fields['is_active'],
          ],
-         [
+         __('Oauth provider', 'oauthimap') => [
             'name'     => 'provider',
-            'label'    => __('Oauth provider', 'oauthimap'),
-            'type'     => 'oauth_provider',
-            'list'     => true,
+            'type'     => 'select',
+            'values'   => $providerValues,
+            'value'    => $this->fields['provider'],
+            'hooks'    => [
+                'change' => <<<JS
+                    const tenant_id = $('#dropdown_tenant_id{$this->form_rand}');
+                    tenant_id.prop('disabled', $(this).val() !== tenant_id.data('provider'));
+                JS,
+            ],
          ],
-         [
+         __('Client ID', 'oauthimap') => [
             'name'     => 'client_id',
-            'label'    => __('Client ID', 'oauthimap'),
             'type'     => 'text',
-            'list'     => true,
+            'value'    => $this->fields['client_id'],
          ],
-         [
+         __('Client secret', 'oauthimap') => [
             'name'     => 'client_secret',
-            'label'    => __('Client secret', 'oauthimap'),
-            'type'     => 'secured_field',
-            'list'     => false,
+            'type'     => 'password',
+            'value'    => $this->fields['client_secret'],
+            'canSee'   => true,
          ],
-         [
+         __('Tenant ID', 'oauthimap') => [
             'name'     => 'tenant_id',
-            'label'    => __('Tenant ID', 'oauthimap'),
-            'type'     => 'additionnal_param',
-            'list'     => false,
-            'provider' => Azure::class,
+            'id'       => 'dropdown_tenant_id' . $this->form_rand,
+            'type'     => 'text',
+            'data-provider' => Azure::class,
+            'value'    => $this->fields['tenant_id'],
+            $this->fields['provider'] === Azure::class ? 'disabled' : '' => true,
+         ],
+         __('Callback URL', 'oauthimap') => $this->isNewID($this->fields['id']) ? [] : [
+            'name'     => 'callback_url',
+            'type'     => 'text',
+            'title'    => __('Copy it in the management console of provider', 'oauthimap'),
+            'value'    => $this->getCallbackUrl(),
+            'readonly' => true,
          ],
       ];
    }
