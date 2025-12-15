@@ -1,6 +1,6 @@
 {
     "require": {
-        "php": "^7.2",
+        "php": "^8.0",
         "league/oauth2-google": "^3.0",
         "thenetworg/oauth2-azure": "^2.1"
     },
@@ -10,7 +10,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.0"
+            "php": "8.0"
         },
         "sort-packages": true
     }
